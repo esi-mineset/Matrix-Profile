@@ -8,16 +8,16 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile "org.nd4j:nd4j-native-platform:1.0.0-beta2"
+    compile "org.nd4j:nd4j-native-platform:1.0.0-beta3"
     compile group: 'com.github.wendykierp', name: 'JTransforms', version: '3.1'
 }
 
 
 // Signing
-apply plugin: 'signing'
-signing {
-    sign configurations.archives
-}
+//apply plugin: 'signing'
+//signing {
+//    sign configurations.archives
+//}
 
 
 // Deploying
@@ -38,7 +38,7 @@ artifacts {
 
 group = "io.github.ensozos"
 archivesBaseName = "matrix-profile"
-version '0.0.3'
+version '0.0.4-mineset-SNAPSHOT'
 
 
 // Build, sign, and upload
@@ -47,13 +47,9 @@ uploadArchives {
         mavenDeployer {
 
             // Sign POM
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
+            //beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
             // Destination
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+            repository(url: "http://esi-components.esi-group.com/artifactory/local-maven-snapshot") {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
