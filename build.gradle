@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.3'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
@@ -32,14 +42,43 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
-artifacts {
-    archives javadocJar, sourcesJar
+
+// This jar will have just the compiled source for this project
+jar {
+    baseName = 'matrix-profile'
+    classifier = 'stripped'
 }
+// This jar will have averything including native libs for all platforms.
+// Normally the classifier would be "all",
+// but unfortunately spark_submit cannot recognize the classifier coordinate so
+// the shaded jar has not classifier, while the regular one uses "stripped" to identify it.
+shadowJar {
+    baseName = 'matrix-profile'
+    classifier = ''
+}
+
+artifacts {
+    archives jar, javadocJar, sourcesJar, shadowJar
+}
+
 
 group = "io.github.ensozos"
 archivesBaseName = "matrix-profile"
+// Because of https://issues.apache.org/jira/browse/SPARK-20075 spark --packages won't recognize
+// the "all" classifier, so, as a work around, change the version name to have "shaded" in it when running the
+// uploadShadow task.
+//version '0.0.4-shaded-SNAPSHOT'
 version '0.0.4-mineset-SNAPSHOT'
 
+uploadShadow {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://esi-components.esi-group.com/artifactory/local-maven-snapshot") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+        }
+    }
+}
 
 // Build, sign, and upload
 uploadArchives {
