@@ -12,6 +12,7 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
+
 repositories {
     mavenCentral()
 }
@@ -59,10 +60,10 @@ jar {
     baseName = 'matrix-profile'
     classifier = 'stripped'
 }
-// This jar will have averything including native libs for all platforms.
+// This jar will have everything including native libs for all platforms.
 // Normally the classifier would be "all",
 // but unfortunately spark_submit cannot recognize the classifier coordinate so
-// the shaded jar has not classifier, while the regular one uses "stripped" to identify it.
+// the shaded jar has no classifier, while the regular one uses "stripped" to identify it.
 shadowJar {
     baseName = 'matrix-profile'
     classifier = ''
@@ -75,11 +76,7 @@ artifacts {
 
 group = "io.github.ensozos"
 archivesBaseName = "matrix-profile"
-// Because of https://issues.apache.org/jira/browse/SPARK-20075 spark --packages won't recognize
-// the "all" classifier, so, as a work around, change the version name to have "shaded" in it when running the
-// uploadShadow task.
-//version '0.0.4-shaded-SNAPSHOT'
-version '0.0.4-mineset-SNAPSHOT'
+version '0.0.5-mineset-SNAPSHOT'
 
 uploadShadow {
     repositories {
@@ -130,6 +127,13 @@ uploadArchives {
                         email 'zosimadi@csd.auth.gr'
                         organization 'ensozos'
                         organizationUrl 'https://ensozos.github.io/Matrix-Profile/'
+                    }
+                    developer {
+                        id 'barrybecker4'
+                        name 'Barry Becker'
+                        email 'bbe@esi-group.com'
+                        organization 'esi-mineset'
+                        organizationUrl 'https://github.com/esi-mineset'
                     }
                 }
             }
